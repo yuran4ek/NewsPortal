@@ -1,0 +1,96 @@
+1. Создать двух пользователей (с помощью метода User.objects.create_user('username')).
+ user1 = User.objects.create_user('Sam Jackson')
+ user2 = User.objects.create_user('Milly Brown')
+
+2. Создать два объекта модели Author, связанные с пользователями.
+ author1 = Author.objects.create(users=user1)
+ author2 = Author.objects.create(users=user2)
+
+3. Добавить 4 категории в модель Category.
+>>> category1 = Category.objects.create(categories='Sport')
+>>> category2 = Category.objects.create(categories='Football')
+>>> category3 = Category.objects.create(categories='Technology')
+>>> category4 = Category.objects.create(categories='IT')
+
+4. Добавить 2 статьи и 1 новость.
+>>> post1 = Post.objects.create(header="'Челси' разбил 'Милан'. И напомнил, как проходил 'Ювентус'", text="После объявления стартовых составов первая мысль отослала к Тухелю. Под игру с 'Миланом'  Поттер выбрал типичную основу Томаса, с тремя центральными защитниками, двумя шестерками и другими атрибутами. 'Челси'  и победил будто по лекалам немца: за счет продуманной защиты и агрессивных вингбэков. Домашний матч с 'Ювентусом' сложился по схожему сценарию. Единственное – после ноябрьской победы 'Челси'  впал в кризис. Надеюсь, осень 2022-го готовит другой сценарий.", postAuthor=author1)
+>>> post2 = Post.objects.create(header="Победа с привкусом горечи. Ювентус обыграл Маккаби", text="Самый негативный аспект всей игры - реализация. Игроки Ювентуса легко могли забивать вдвое больше, ведь соперник до 75 минуты вообще не подавал признаков жизни. Однако Юве раз за разом проваливал атаки. Подобная расхлябанность может сильно аукнуться в играх с соперников высокого класса, который не позволит создавать много и потребуется ограничиться лишь несколькими моментами за весь матч. Поэтому подобное малодушие удручает.", postAuthor=author1)
+>>> news1 = Post.objects.create(postsOrNews=Post.news, header="Western Digital представила новый защищённый внешний SSD", text="Внешний жёсткий диск SanDisk Professional Pro-G4 0 имеет защиту от влаги и пыли по стандарту IP68, выдерживает падение с высоты трёх метр ов на бетонный пол, правда, покрытый ковровым покрытием. Также он может выдержать оказыв аемое на него давление до 1,8 тонн. Из каких именно материалов выполнен корпус накопител я, производитель не указал.", postAuthor=author2)
+
+5. Присвоить им категории (как минимум в одной статье/новости должно быть не меньше 2 категорий).
+>>> PostCategory.objects.create(post=post1, category=category1)
+>>> PostCategory.objects.create(post=post1, category=category2)
+>>> PostCategory.objects.create(post=post2, category=category1)
+>>> PostCategory.objects.create(post=post2, category=category2)
+>>> PostCategory.objects.create(post=news1, category=category3)
+>>> PostCategory.objects.create(post=news1, category=category4)
+
+6. Создать как минимум 4 комментария к разным объектам модели Post (в каждом объекте должен быть как минимум один комментарий).
+>>> comment1=Comment.objects.create(comments="Челси выиграет ЛЧ? я думаю, что нет. Фаворит - Бавария и Манчестер Сити!", postComment=post1, userComment=user2)
+>>> comment2 = Comment.objects.create(comments="Ювентус очень плох! лучше бы они вообще вылетели ото всюду!", postComment=post2, userComment=user2)
+>>> comment3 = Comment.objects.create(comments="Челси чемпион!", postComment=post1, userComment=user2)
+>>> comment4 = Comment.objects.create(comments="Western Digital сделали огромный прорыв в технологиях с выпуском нового SSD. Я считаю, это огромный шаг для развития в этой области.", postComment=news1, userComment=user1)
+
+7. Применяя функции like() и dislike() к статьям/новостям и комментариям, скорректировать рейтинги этих объектов.
+>>> post1.like()
+>>> post1.like()
+>>> post1.like()
+>>> post1.dislike()
+>>> post2.dislike()
+>>> post2.dislike()
+>>> post2.dislike()
+>>> post2.like()
+>>> post2.like()
+>>> post2.like()
+>>> post2.like()
+>>> news1.like()
+>>> news1.like()
+>>> news1.like()
+>>> news1.like()
+>>> news1.like()
+>>> comment1.like()
+>>> comment1.like()
+>>> comment1.like()
+>>> comment2.like()
+>>> comment2.dislike()
+>>> comment2.dislike()
+>>> comment2.dislike()
+>>> comment2.dislike()
+>>> comment2.dislike()
+>>> comment3.like()
+>>> comment3.like()
+>>> comment4.like()
+>>> comment4.like()
+>>> comment4.like()
+>>> comment4.like()
+>>> comment4.like()
+>>> comment4.like()
+
+8. Обновить рейтинги пользователей.
+>>> author1.update_rating()
+>>> author1.rating
+>>> 17
+>>> author2.update_rating()
+>>> author2.rating
+>>> 23
+
+9. Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
+>>> Author.objects.order_by('-rating').values('users__username', 'rating')[0]
+>>> {'users__username': 'Milly Brown', 'rating': 23}
+
+10. Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+>>> best_post = Post.objects.order_by('-rating')[0]
+>>> best_post.timeIn.strftime('%d-%m-%Y %H:%M:%S')
+>>> '06-10-2022 14:49:16'
+>>> Post.objects.order_by('-rating').values('postAuthor__users__username', 'rating', 'header')[0]
+>>> {'postAuthor__users__username': 'Milly Brown', 'rating': 5, 'header': 'Western Digital представила новый защищённый внешний SSD'}
+>>> best_post.preview()
+>>> 'Внешний жёсткий диск SanDisk Professional Pro-G40 имеет защиту от влаги и пыли по стандарту IP68, выдерживает падение с высо...'
+
+
+11. Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+>>> best_comment = Comment.objects.get(postComment=best_post)
+>>> best_comment.timeIn.strftime('%d-%m-%Y %H:%M:%S')
+>>> '06-10-2022 14:51:25'
+>>> Comment.objects.filter(postComment=best_post).values('userComment__username', 'rating', 'comments')
+>>> <QuerySet [{'userComment__username': 'Sam Jackson', 'rating': 6, 'comments': 'Western Digital сделали огромный прорыв в технологиях с выпуском нового SSD. Я считаю, это огромный шаг для развития в этой области.'}]>
