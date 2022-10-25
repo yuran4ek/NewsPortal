@@ -1,0 +1,18 @@
+<!-- наследуемся от шаблона default.html, который мы создавали для
+flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filter %}
+
+<!-- Название у нас будет Post -->
+{% block title %}
+Post
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим саму новость, идентификатор
+которого был передан в url -->
+{% block content %}
+    <h1>{{ oneNews.header|censor }}</h1>
+    <h1>{{ oneNews.timeIn|date:'d.M.Y' }}</h1>
+        <h3>{{ oneNews.text|censor }}</h3>
+{% endblock content %}
