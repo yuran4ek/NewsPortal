@@ -29,7 +29,7 @@ Posts
                     <td>{{ post.header|censor }}</td>
                     <td>{{ post.timeIn|date:'d.M.Y'}}</td>
                     <td>{{ post.text|truncatewords:20|censor }}</td>
-                    <td><a href="oneNews/{{ post.id }}">узнать подробнее</a></td>
+                    <td><a href="{{ post.id }}">узнать подробнее</a></td>
                 </tr>
             {% endfor %}
 
