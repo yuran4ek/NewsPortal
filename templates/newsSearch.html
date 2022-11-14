@@ -13,20 +13,26 @@ Posts
 
 <!-- В контенте на странице мы выводим все посты -->
 {% block content %}
-
     <h3>
-        <td>Общее количество публикаций на портале: </td>
-        <!-- {{ news | length }} out of --> {{ paginator.count }}
+        <td>Количество найденных публикаций: </td>
+        {{ news | length }}
     </h3>
     <div class="line"></div>
     <h5>
-        <a href="search/">Поиск публикаций</a>
+        <a href="{% url 'news_create' %}">Создать публикацию</a>
     </h5>
     <div class="line"></div>
     <h5>
-        <a href="create/">Создать публикацию</a>
+        <a href="{% url 'news_list' %}">На главную</a>
     </h5>
-    <div class="line"></div>
+    <hr>
+        <form action="" method="get">
+            <h5>{{ filterset.form.as_p }}</h5>
+            <!--<input type="datetime-local" id="timeIn"
+            name="timeIn" value="{{ filters.form.timeIn }}"> -->
+            <input type="submit" value="Найти" />
+        </form>
+    <hr>
     {% if news %}
         <table>
             <tr>
@@ -40,23 +46,22 @@ Posts
             {% for post in news %}
                 <tr>
                     <td>{{ post.get_postsOrNews_display }}</td>
-                    <td width="30%">{{ post.header|censor }}</td>
+                    <td width="50%">{{ post.header|censor }}</td>
                     <td>{{ post.timeIn|date:'d.M.Y'}}</td>
                     <td width="50%">{{ post.text|truncatewords:20|censor }}</td>
-                    <td><a href="{{ post.id }}">Узнать подробнее</a></td>
+                    <td><a href="{{ post.id }}">узнать подробнее</a></td>
                     <td><a href="{% url 'news_update' post.id %}">Изменить</a> </td>
                 </tr>
             {% endfor %}
 
         </table>
     {% else %}
-        <h2>Публикации отсутствуют</h2>
+        <h2>Публикации не найдены</h2>
     {% endif %}
 
     <h6>страницы</h6>{{ page_obj.number }}
 
     {% if page_obj.has_previous %}
-
         <a href="?{% url_replace page=1 %}">1</a>
         {% if page_obj.previous_page_number != 1 %}
             <a href="?{% url_replace page=page_obj.previous_page_number %}">

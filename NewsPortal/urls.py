@@ -23,3 +23,4 @@ urlpatterns = [
     path('oneNews/', include('news.urls')),
 
 ]
+

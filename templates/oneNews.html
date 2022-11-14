@@ -12,7 +12,28 @@ Post
 <!-- В контенте на странице мы выводим саму новость, идентификатор
 которого был передан в url -->
 {% block content %}
-    <h1>{{ oneNews.header|censor }}</h1>
-    <h1>{{ oneNews.timeIn|date:'d.M.Y' }}</h1>
+
+    <h1>Заголовок публикации</h1>
+        <h2>{{ oneNews.header|censor }}</h2>
+        <div class="line"></div>
+    <h1>Дата публикации</h1>
+        <h2>{{ oneNews.timeIn|date:'d.M.Y' }}</h2>
+        <div class="line"></div>
+    <h1>Текст публикации</h1>
         <h3>{{ oneNews.text|censor }}</h3>
+        <div class="line"></div>
+    <h5>
+        <a href="{% url 'news_update' oneNews.id %}">Изменить</a>
+    </h5>
+    <div class="line"></div>
+    <h5>
+        <a href="{% url 'news_delete' oneNews.id %}">Удалить</a>
+    </h5>
+
+    <div class="line"></div>
+    <h5>
+        <a href="{% url 'news_list' %}">На главную</a>
+    </h5>
+
+
 {% endblock content %}

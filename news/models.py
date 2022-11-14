@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.db.models import Sum
 
 
@@ -23,10 +24,16 @@ class Author(models.Model):
         self.rating = postRait * 3 + commentRait + commentPostRait
         self.save()
 
+    def __str__(self):
+        return f'{self.users}'
+
 
 class Category(models.Model):
     categories = models.CharField(max_length=255,
                                   unique=True)
+
+    def __str__(self):
+        return f'{self.categories}'
 
 
 class Post(models.Model):
@@ -42,7 +49,7 @@ class Post(models.Model):
                                    choices=TYPES,
                                    default=posts)
     timeIn = models.DateTimeField(auto_now_add=True)
-    header = models.CharField(max_length=64)
+    header = models.CharField(max_length=128)
     text = models.TextField()
     rating = models.IntegerField(default=0)
 
@@ -63,6 +70,8 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.text}'
 
+    def get_absolute_url(self):
+        return reverse('news_list')
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

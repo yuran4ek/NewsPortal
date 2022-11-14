@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Новая публикация</h1>
+<div class="line"></div>
+    <h5>
+        <a href="{% url 'news_list' %}">На главную</a>
+    </h5>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Опубликовать" />
+</form>
+
+{% endblock content %}
