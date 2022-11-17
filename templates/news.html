@@ -23,10 +23,13 @@ Posts
         <a href="search/">Поиск публикаций</a>
     </h5>
     <div class="line"></div>
+
+    {% if perms.news.add_post %}
     <h5>
         <a href="create/">Создать публикацию</a>
     </h5>
     <div class="line"></div>
+    {% endif %}
     {% if news %}
         <table>
             <tr>
@@ -35,7 +38,9 @@ Posts
                 <td><h6>Дата публикации</h6></td>
                 <td><h6>Превью публикации</h6></td>
                 <td><h6>Подробнее о публикации</h6></td>
-                <td><h6>Изменить публикацию</h6></td>
+                {% if perms.news.change_post %}
+                    <td><h6>Изменить публикацию</h6></td>
+                {% endif %}
             </tr>
             {% for post in news %}
                 <tr>
@@ -44,7 +49,9 @@ Posts
                     <td>{{ post.timeIn|date:'d.M.Y'}}</td>
                     <td width="50%">{{ post.text|truncatewords:20|censor }}</td>
                     <td><a href="{{ post.id }}">Узнать подробнее</a></td>
-                    <td><a href="{% url 'news_update' post.id %}">Изменить</a> </td>
+                    {% if perms.news.change_post %}
+                        <td><a href="{% url 'news_update' post.id %}">Изменить</a> </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
 

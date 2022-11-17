@@ -22,13 +22,20 @@ Post
     <h1>Текст публикации</h1>
         <h3>{{ oneNews.text|censor }}</h3>
         <div class="line"></div>
+
+    {% if perms.news.change_post %}
     <h5>
         <a href="{% url 'news_update' oneNews.id %}">Изменить</a>
     </h5>
+    {% endif %}
+
     <div class="line"></div>
+
+    {% if perms.news.delete_post %}
     <h5>
         <a href="{% url 'news_delete' oneNews.id %}">Удалить</a>
     </h5>
+    {% endif %}
 
     <div class="line"></div>
     <h5>
