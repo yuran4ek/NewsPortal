@@ -23,27 +23,27 @@
         <!-- Responsive navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
    <div class="container">
-       <a class="navbar-brand" href="#">Django flatpages</a>
-       <button class="navbar-toggler" type="button" data-toggle="collapse"
-               data-target="#navbarResponsive"
-               aria-controls="navbarResponsive" aria-expanded="false"
-               aria-label="Toggle navigation">
-           <span class="navbar-toggler-icon"></span>
-       </button>
-       <div class="collapse navbar-collapse" id="navbarResponsive">
+       <a class="navbar-brand"><b>НОВОСТНОЙ ПОРТАЛ</b></a>
            <ul class="navbar-nav ml-auto">
-               <li class="nav-item active">
-                   <a class="nav-link" href="#">Home
-                       <span class="sr-only">(current)</span>
-                   </a>
-               </li>
-               <li class="nav-item">
-                   <a class="nav-link" href="/news/">News</a>
-               </li>
+            <div style="text-align:center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'news_list' %}">На главную</a></li>
+            </div>
            </ul>
-       </div>
+               <div style="text-align:right">
+                   <div class="collapse navbar-collapse" id="navbarResponsive">
+                       <ul class="navbar-nav ml-auto">
+                        {% if request.user.is_authenticated %}
+                           <li class="nav-item"><a class="nav-link"> Профиль: <q>{{ user.first_name }}</q></a></li>
+                           <li class="nav-item"><a class="nav-link" href="{% url 'accounts_logout' %}"> Выход </a></li>
+                        {% else %}
+                           <li class="nav-item"><a class="nav-link" href="{% url 'accounts_signup' %}"> Регистрация </a></li>
+                        {% endif %}
+                       </ul>
+                   </div>
+               </div>
    </div>
 </nav>
+
 
         <!-- Page content-->
 <div class="container">

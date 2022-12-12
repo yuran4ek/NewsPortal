@@ -1,0 +1,21 @@
+{% extends "flatpages/default.html" %}
+
+{% block content %}
+
+<h1>Поздравляем, Вы стали автором!</h1>
+<div class="line"></div>
+<h3>Теперь Вы можете:<br>
+    <h5>делать публикации на нашем портале<br>
+        редактировать и удалять свои публикации<br>
+    </h5>
+</h3>
+<div class="line"></div>
+<h3>
+    Выберете дальнейшие действия:<br>
+</h3>
+    <h5>
+        <a href="{% url 'news_list' %}">Вернуться на главную</a><br>
+        или<br>
+        <a href="{% url 'news_create' %}">Создать публикацию</a>
+    </h5>
+{% endblock content %}

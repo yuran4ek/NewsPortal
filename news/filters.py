@@ -12,11 +12,11 @@ class PostFilter(FilterSet):
         label='Заголовок публикации'
     )
 
-    categories = django_filters.ModelChoiceFilter(
+    categories = django_filters.ModelMultipleChoiceFilter(
         field_name='postCategories',
         queryset=Category.objects.all(),
         label='Категории публикаций',
-        empty_label='Выберете категорию',
+
     )
 
     timeIn = django_filters.DateFilter(

@@ -1,31 +1,34 @@
 from django import template
-from flashtext import KeywordProcessor
-
+import re
 
 register = template.Library()
 
 
-keyword_processor = KeywordProcessor()
-
-keyword_dict = {
-    'м**ч': ['матч'],
-    'Ч***и': ['Челси'],
-    'о***ь': ['осень'],
-    'и****и': ['игроки'],
-    'а***и': ['атаки'],
-    'р********я': ['реализация'],
-    'д**к': ['диск'],
-    'в*********ь': ['выдерживать'],
-    'к****с': ['корпус'],
-    'п***********ь': ['производитель']
-}
-
-keyword_processor.add_keywords_from_dict(keyword_dict)
-
 @register.filter()
 def censor(value):
-    """
-    value: значение, к которому будем применять фильтр
-    """
-    new_value = keyword_processor.replace_keywords(value)
-    return f'{new_value}'
+    bad_words = [
+        'матч',
+        'Челси',
+        'осень',
+        'игроки',
+        'атаки',
+        'реализация',
+        'диск',
+        'выдерживать',
+        'корпус',
+        'производитель',
+        'один',
+        'клуб',
+        'уникальный',
+        'клавиатура',
+        'сбор',
+        'защитник',
+
+    ]
+
+    if not isinstance(value, str):
+        raise TypeError('Переменная должна быть строкового типа!')
+    for word in bad_words:
+        pattern = (r"\b" + re.escape(word) + r"\b")
+        value = re.sub(pattern, (word[0] + (len(word) - 2) * '*') + word[-1], value, flags=re.I)
+    return value

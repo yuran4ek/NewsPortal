@@ -92,15 +92,19 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_SESSION_REMEMBER = None
+
+# ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
 
 LOGIN_REDIRECT_URL = '/news'
+LOGOUT_REDIRECT_URL = '/accounts/login'
 
-ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignUpForm'}
+ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignUpForm',}
 
 WSGI_APPLICATION = 'NewsPortal.wsgi.application'
 
@@ -138,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 

@@ -1,11 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Post, Category, Author
+from django.shortcuts import redirect
+
+from .models import Post, Category, Comment
 
 
 class PostForm(forms.ModelForm):
-    postAuthor = forms.ModelChoiceField(queryset=Author.objects.all(),
-                                        label='Автор публикации')
     header = forms.CharField(min_length=20,
                              label='Заголовок публикации')
     text = forms.CharField(label='Текст публикации',
@@ -19,7 +19,6 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
-            'postAuthor',
             'header',
             'text',
             'postCategories',
@@ -48,6 +47,33 @@ class PostForm(forms.ModelForm):
         if text is not None and text == header:
             raise ValidationError(
                 'Текст публикации не должен быть идентичен заголовку публикации.'
+            )
+
+        return cleaned_data
+
+
+class CommentForm(forms.ModelForm):
+    comments = forms.CharField(max_length=80,
+                               label='Ваш комментарий',
+                               )
+
+    class Meta:
+        model = Comment
+        fields = [
+            'comments',
+        ]
+
+    def clean(self):
+        cleaned_data = super(CommentForm, self).clean()
+
+        comments = cleaned_data.get('comments')
+        if comments is None:
+            raise ValidationError(
+                'Поле не может быть пустым.'
+            )
+        if comments[0].islower():
+            raise ValidationError(
+                'Текст публикации должен начинаться с заглавной буквы.'
             )
 
         return cleaned_data

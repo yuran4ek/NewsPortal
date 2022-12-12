@@ -14,10 +14,21 @@ Post
 {% block content %}
 
     <h1>Заголовок публикации</h1>
-        <h2>{{ oneNews.header|censor }}</h2>
+        <h3>{{ oneNews.header|censor }}</h3>
         <div class="line"></div>
     <h1>Дата публикации</h1>
-        <h2>{{ oneNews.timeIn|date:'d.M.Y' }}</h2>
+        <h3>{{ oneNews.timeIn|date:'d.m.Y' }}</h3>
+        <div class="line"></div>
+    <h1>Категории публикации</h1>
+        <h3>
+            {% for category in oneNews.postCategories.all %}
+                {% if not forloop.last %}
+                    {{ category.categories }},
+                {% else %}
+                    {{ category.categories }}
+                {% endif %}
+            {% endfor %}
+        </h3>
         <div class="line"></div>
     <h1>Текст публикации</h1>
         <h3>{{ oneNews.text|censor }}</h3>
@@ -25,7 +36,7 @@ Post
 
     {% if perms.news.change_post %}
     <h5>
-        <a href="{% url 'news_update' oneNews.id %}">Изменить</a>
+        <a href="{% url 'news_update' oneNews.id %}">Изменить публикацию</a>
     </h5>
     {% endif %}
 
@@ -33,14 +44,41 @@ Post
 
     {% if perms.news.delete_post %}
     <h5>
-        <a href="{% url 'news_delete' oneNews.id %}">Удалить</a>
+        <a href="{% url 'news_delete' oneNews.id %}">Удалить публикацию</a>
     </h5>
     {% endif %}
-
     <div class="line"></div>
-    <h5>
-        <a href="{% url 'news_list' %}">На главную</a>
-    </h5>
 
+    <h3>Комментарии:</h3>
+
+    {% for comm in commnts %}
+        {% if user_now == comm.userComment %}
+            <h4>
+                {{ comm.userComment.first_name }} {{ comm.userComment.last_name }},
+                {{ comm.timeIn|date:'d.m.Y H:i' }}:<br>
+            </h4>
+            <h5>
+                {{ comm.comments|censor }}
+            </h5>
+            <h6>
+                <a href="{% url 'delete_comment' comm.id %}">Удалить комментарий</a>
+            </h6>
+        {% else %}
+            <h4>
+                {{ comm.userComment.first_name }} {{ comm.userComment.last_name }},
+                {{ comm.timeIn|date:'d.m.Y H:i' }}:<br>
+            </h4>
+            <h5>
+                {{ comm.comments|censor }}
+            </h5>
+        {% endif %}
+    {% endfor %}
+
+    <hr>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Оставить комментарий" />
+    </form>
 
 {% endblock content %}

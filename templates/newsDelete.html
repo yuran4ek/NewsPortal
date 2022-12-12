@@ -2,15 +2,13 @@
 
 {% block content %}
 <h1>Удаление публикации</h1>
-<div class="line"></div>
-    <h5>
-        <a href="{% url 'news_list' %}">На главную</a>
-    </h5>
+
 <hr>
 <form action="" method="post">
     {% csrf_token %}
-    <p>Удаляем "{{ object.get_postsOrNews_display }}"</p>
-    <p>"{{ object.header }}"?</p>
+    <h3>Удаляем:</h3>
+        <h5>"{{ object.get_postsOrNews_display }}"</h5>
+        <h5>"{{ object.header }}"?</h5>
     <input type="submit" value="Удалить публикацию" />
 </form>
 {% endblock content %}

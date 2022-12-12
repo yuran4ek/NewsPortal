@@ -20,20 +20,29 @@ Posts
     </h3>
     <div class="line"></div>
     <h5>
-        <a href="search/">Поиск публикаций</a>
+        <a href="{% url 'news_search' %}">Поиск публикаций</a>
     </h5>
     <div class="line"></div>
 
     {% if perms.news.add_post %}
     <h5>
-        <a href="create/">Создать публикацию</a>
+        <a href="{% url 'news_create' %}">Создать публикацию</a>
     </h5>
     <div class="line"></div>
     {% endif %}
+
+    {% if not is_author %}
+    <h5>
+        <a href="{% url 'become_author' %}">Стать автором</a>
+    <div class="line"></div>
+    </h5>
+    {% endif %}
+
     {% if news %}
         <table>
             <tr>
                 <td><h6>Тип публикации</h6></td>
+                <td><h6>Категории пуликации</h6></td>
                 <td><h6>Заголовок публикации</h6></td>
                 <td><h6>Дата публикации</h6></td>
                 <td><h6>Превью публикации</h6></td>
@@ -45,8 +54,17 @@ Posts
             {% for post in news %}
                 <tr>
                     <td>{{ post.get_postsOrNews_display }}</td>
+                    <td>
+                        {% for category in post.postCategories.all %}
+                            {% if not forloop.last %}
+                                {{ category.categories }},
+                            {% else %}
+                                {{ category.categories }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td width="30%">{{ post.header|censor }}</td>
-                    <td>{{ post.timeIn|date:'d.M.Y'}}</td>
+                    <td>{{ post.timeIn|date:'d.m.Y'}}</td>
                     <td width="50%">{{ post.text|truncatewords:20|censor }}</td>
                     <td><a href="{{ post.id }}">Узнать подробнее</a></td>
                     {% if perms.news.change_post %}
@@ -60,27 +78,16 @@ Posts
         <h2>Публикации отсутствуют</h2>
     {% endif %}
 
-    <h6>страницы</h6>{{ page_obj.number }}
+    <h6>страницы</h6>
 
     {% if page_obj.has_previous %}
-
-        <a href="?{% url_replace page=1 %}">1</a>
-        {% if page_obj.previous_page_number != 1 %}
-            <a href="?{% url_replace page=page_obj.previous_page_number %}">
-                {{ page.obj_previous_page_number }}
-            </a>
-        {% endif %}
+        <a href="?{% url_replace page=page_obj.previous_page_number %}">предыдущая</a>
     {% endif %}
 
+    {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+
     {% if page_obj.has_next %}
-        <a href="?{% url_replace page=page_obj.next_page_number %}">
-            {{ page_obj.next_page_number }}
-        </a>
-        {% if paginator.num_pages != page_obj.next_page_number %}
-            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">
-                {{ page_obj.paginator.num_pages }}
-            </a>
-        {% endif %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">следующая</a>
     {% endif %}
 
 {% endblock content %}
