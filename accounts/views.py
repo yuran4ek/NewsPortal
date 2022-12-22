@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.views.generic.edit import CreateView
 from news.models import Author
@@ -18,6 +19,18 @@ class SignUp(CreateView):
     form_class = CustomSignUpForm
     success_url = '/accounts/login'
     template_name = 'account/signup.html'
+
+    def post(self, request, *args, **kwargs):
+        info = User(username=request.POST['username'])
+        info.save()
+
+        send_mail(
+            subject=info.username,
+            message='Test message',
+            from_email='yuran4ek37@yandex.ru',
+            recipient_list=[],
+        )
+        return redirect(request.META.get('HTTP_REFERER'))
 
 class LogOut(LogoutView):
     template_name = 'accounts/logout.html'
