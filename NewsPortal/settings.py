@@ -53,8 +53,6 @@ INSTALLED_APPS = [
 
 ]
 
-DEFAULT_FROM_EMAIL = 'yuran4ek37@yandex.ru'
-
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -170,8 +168,10 @@ STATICFILES_DIRS = [BASE_DIR /'static']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_EMAIL')
+
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'yuran4ek37'
-EMAIL_HOST_PASSWORD = 'ruaaigwifnvbhvgh'
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_FOR_YANDEX_EMAIL')
 EMAIL_USE_SSL = True
