@@ -7,11 +7,11 @@
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Обновить" />
+    <input type="submit" class="btn btn-outline-success btn-sm" value="Обновить" />
 </form>
     <div class="line"></div>
     <h5>
-        <a href="{% url 'news_delete' post.id %}">Удалить</a>
+        <a href="{% url 'news_delete' post.id %}" class="btn btn-outline-danger btn-sm">Удалить публикацию</a>
     </h5>
 
 {% endblock content %}

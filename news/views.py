@@ -1,12 +1,18 @@
+from datetime import datetime, timedelta
+
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect, get_object_or_404, render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic.edit import FormMixin
+from django.core.mail import EmailMultiAlternatives, send_mail
+from django.template.loader import render_to_string
 
 from news.custom_mixins import OwnerPermissionRequiredMixin
-from django.urls import reverse_lazy, reverse
-from .models import Post, Comment, Author
+
+from NewsPortal import settings
+from .models import Post, Comment, Author, Category, SubscribeCategories
 from .filters import PostFilter
 from .forms import PostForm, CommentForm
 
@@ -26,7 +32,7 @@ class PostList(ListView):
 
 class PostSearch(ListView):
     model = Post
-    ordering = 'timeIn'
+    ordering = '-timeIn'
     template_name = 'newsSearch.html'
     context_object_name = 'news'
     paginate_by = 5
@@ -75,15 +81,28 @@ class PostDetail(DetailView, FormMixin):
 def delete_comment(request, **kwargs):
     selected_comments = Comment.objects.get(pk=int(kwargs['pk']))
     selected_comments.delete()
-
     return redirect(request.META.get('HTTP_REFERER'))
 
 
-class PostCreate(PermissionRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'newsCreate.html'
+
+    def form_valid(self, form):
+        form.instance.postAuthor = self.request.user.author
+        print(f'author: {form.instance.postAuthor}')
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        limits: int = settings.DAILY_POST_LIMIT
+        prev_day = datetime.now() - timedelta(days=1)
+        posts_day_count: list = Post.objects.filter(postAuthor__users=self.request.user,
+                                                    timeIn__gte=prev_day)
+        context['post_limits'] = limits > len(posts_day_count)
+        return context
 
 
 class PostUpdate(OwnerPermissionRequiredMixin, UpdateView):
@@ -103,3 +122,54 @@ class PostDelete(OwnerPermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'newsDelete.html'
     success_url = reverse_lazy('news_list')
+
+
+class CategoryListView(ListView):
+    model = Post
+    template_name = 'category_list.html'
+    context_object_name = 'category_news_list'
+
+    def get_queryset(self):
+        self.postCategories = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(postCategories=self.postCategories).order_by('-timeIn')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.postCategories.subscribers.all()
+        context['category'] = self.postCategories
+        return context
+
+
+def subscribe_unsubscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    sample_html = ''
+    if user not in category.subscribers.all():
+        category.subscribers.add(user)
+        sample_html = 'account/email/email_subscribe_information.html'
+    elif user in category.subscribers.all():
+        category.subscribers.remove(user)
+        sample_html = 'account/email/email_unsubscribe_information.html'
+
+    html_content = render_to_string(
+        sample_html,
+        {
+            'new_user': user.username,
+            'link': f'{settings.SITE_URL}/news/',
+            'categories': category,
+            'category_link': f'{settings.SITE_URL}/news/categories/{pk}'
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject='Информация о подписке',
+        body='',
+        from_email='yuran4ek37@yandex.ru',
+        to=[user.email],
+    )
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return render(request, s_html, {'category': category})

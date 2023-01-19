@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'news',
+    'news.apps.NewsConfig',
     'accounts',
     'django_filters',
     'allauth',
@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.yandex',
 
 ]
+
+DEFAULT_FROM_EMAIL = 'yuran4ek37@yandex.ru'
 
 SITE_ID = 1
 
@@ -96,7 +98,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SESSION_REMEMBER = None
 
 # ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
@@ -108,6 +110,9 @@ ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignUpForm',}
 
 WSGI_APPLICATION = 'NewsPortal.wsgi.application'
 
+SITE_URL = 'http://127.0.0.1:8000'
+
+DAILY_POST_LIMIT = 3
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -163,8 +168,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [BASE_DIR /'static']
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'yuran4ek37'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'ruaaigwifnvbhvgh'
 EMAIL_USE_SSL = True

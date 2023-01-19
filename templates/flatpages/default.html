@@ -1,51 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <meta charset="utf-8">
-        <title>Новостной портал</title>
-        <style>
-            .line {
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <meta charset="utf-8">
+    <title>Новостной портал</title>
+    <style>
+        .line {
             border-bottom: 1px solid #c8c8c8
-            }
-         </style>
-        <title>Bare - Start Bootstrap Template</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        {% load static %}
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-    </head>
-    <body>
-        <!-- Responsive navbar-->
+        }
+    </style>
+    <title>Bare - Start Bootstrap Template</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    {% load static %}
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet"/>
+</head>
+<body>
+<!-- Responsive navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-   <div class="container">
-       <a class="navbar-brand"><b>НОВОСТНОЙ ПОРТАЛ</b></a>
-           <ul class="navbar-nav ml-auto">
-            <div style="text-align:center">
-                <li class="nav-item"><a class="nav-link" href="{% url 'news_list' %}">На главную</a></li>
+    <div class="container">
+        <a class="navbar-brand"><b>НОВОСТНОЙ ПОРТАЛ</b></a>
+        <div style="text-align:right">
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'news_list' %}">На главную</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'news_search' %}">Поиск</a></li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link"> Профиль: "{{ user.first_name }}"</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}"> Выход </a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}"> Войти </a></li>
+                    {% endif %}
+                </ul>
             </div>
-           </ul>
-               <div style="text-align:right">
-                   <div class="collapse navbar-collapse" id="navbarResponsive">
-                       <ul class="navbar-nav ml-auto">
-                        {% if request.user.is_authenticated %}
-                           <li class="nav-item"><a class="nav-link"> Профиль: <q>{{ user.first_name }}</q></a></li>
-                           <li class="nav-item"><a class="nav-link" href="{% url 'accounts_logout' %}"> Выход </a></li>
-                        {% else %}
-                           <li class="nav-item"><a class="nav-link" href="{% url 'accounts_signup' %}"> Регистрация </a></li>
-                        {% endif %}
-                       </ul>
-                   </div>
-               </div>
-   </div>
+        </div>
+    </div>
 </nav>
-
-
-        <!-- Page content-->
+<!-- Page content-->
 <div class="container">
     <div class="row">
         <div class="col-lg-12 text-center">
@@ -54,5 +49,5 @@
         </div>
     </div>
 </div>
-    </body>
+</body>
 </html>

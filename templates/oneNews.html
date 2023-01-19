@@ -13,64 +13,58 @@ Post
 которого был передан в url -->
 {% block content %}
 
-    <h1>Заголовок публикации</h1>
-        <h3>{{ oneNews.header|censor }}</h3>
-        <div class="line"></div>
-    <h1>Дата публикации</h1>
-        <h3>{{ oneNews.timeIn|date:'d.m.Y' }}</h3>
-        <div class="line"></div>
-    <h1>Категории публикации</h1>
-        <h3>
+    <h4><b>Заголовок публикации</b></h4>
+        <h5>{{ oneNews.header|censor }}</h5>
+    <div class="line"></div>
+    <h4><b>Дата публикации</b></h4>
+        <h5>{{ oneNews.timeIn|date:'d.m.Y' }}</h5>
+    <div class="line"></div>
+    <h4><b>Категории публикации</b></h4>
+        <h5>
             {% for category in oneNews.postCategories.all %}
                 {% if not forloop.last %}
-                    {{ category.categories }},
+                    <a href="{% url 'category_list' category.id %}">{{ category.categories }}, </a>
                 {% else %}
-                    {{ category.categories }}
+                    <a href="{% url 'category_list' category.id %}">{{ category.categories }}</a>
                 {% endif %}
             {% endfor %}
-        </h3>
+        </h5>
         <div class="line"></div>
-    <h1>Текст публикации</h1>
-        <h3>{{ oneNews.text|censor }}</h3>
-        <div class="line"></div>
+    <h4><b>Текст публикации</b></h4>
+    <div align="left">
+        <h5>{{ oneNews.text|censor }}</h5>
+    </div>
 
     {% if perms.news.change_post %}
     <h5>
-        <a href="{% url 'news_update' oneNews.id %}">Изменить публикацию</a>
+        <a href="{% url 'news_update' oneNews.id %}" class="btn btn-outline-primary btn-sm">Изменить публикацию</a>
     </h5>
     {% endif %}
-
-    <div class="line"></div>
-
     {% if perms.news.delete_post %}
     <h5>
-        <a href="{% url 'news_delete' oneNews.id %}">Удалить публикацию</a>
+        <a href="{% url 'news_delete' oneNews.id %}" class="btn btn-outline-danger btn-sm">Удалить публикацию</a>
     </h5>
     {% endif %}
     <div class="line"></div>
 
-    <h3>Комментарии:</h3>
-
+    <h4><b>Комментарии</b></h4>
     {% for comm in commnts %}
         {% if user_now == comm.userComment %}
-            <h4>
-                {{ comm.userComment.first_name }} {{ comm.userComment.last_name }},
-                {{ comm.timeIn|date:'d.m.Y H:i' }}:<br>
-            </h4>
             <h5>
-                {{ comm.comments|censor }}
+                {{ comm.userComment.first_name }} {{ comm.userComment.last_name }}:
+                <i>{{ comm.comments|censor }}</i><br>
             </h5>
+            <h6>{{ comm.timeIn|date:'d.m.Y H:i' }}</h6>
             <h6>
-                <a href="{% url 'delete_comment' comm.id %}">Удалить комментарий</a>
+                <a href="{% url 'delete_comment' comm.id %}" class="btn btn-outline-danger btn-sm">
+                    Удалить комментарий</a>
             </h6>
         {% else %}
-            <h4>
-                {{ comm.userComment.first_name }} {{ comm.userComment.last_name }},
-                {{ comm.timeIn|date:'d.m.Y H:i' }}:<br>
-            </h4>
             <h5>
-                {{ comm.comments|censor }}
+                {{ comm.userComment.first_name }} {{ comm.userComment.last_name }}:
+                <i>{{ comm.comments|censor }}</i><br>
             </h5>
+            <h9>{{ comm.timeIn|date:'d.m.Y H:i' }}</h9>
         {% endif %}
     {% endfor %}
 
@@ -78,7 +72,8 @@ Post
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Оставить комментарий" />
+<!--        <button class="btn btn-outline-success btn-sm">Оставить комментарий</button>-->
+        <input type="submit" class="btn btn-outline-success btn-sm" value="Оставить комментарий" />
     </form>
 
 {% endblock content %}

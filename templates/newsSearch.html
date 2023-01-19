@@ -21,7 +21,7 @@ Posts
     {% if perms.news.add_post %}
     <div class="line"></div>
     <h5>
-        <a href="{% url 'news_create' %}">Создать публикацию</a>
+        <a href="{% url 'news_create' %}" class="btn btn-outline-success btn-sm">Создать публикацию</a>
     </h5>
     {% endif %}
 
@@ -30,44 +30,47 @@ Posts
             <h5>{{ filterset.form.as_p }}</h5>
             <!--<input type="datetime-local" id="timeIn"
             name="timeIn" value="{{ filters.form.timeIn }}"> -->
-            <input type="submit" value="Найти" />
+            <input type="submit" class="btn btn-outline-primary btn-sm" value="Найти" />
         </form>
     <hr>
     {% if news %}
-        <table>
-            <tr>
-                <td><h6>Тип публикации</h6></td>
-                <td><h6>Категории публикации</h6></td>
-                <td><h6>Заголовок публикации</h6></td>
-                <td><h6>Дата публикации</h6></td>
-                <td><h6>Превью публикации</h6></td>
-                <td><h6>Подробнее о публикации</h6></td>
-                {% if perms.news.update_post %}
-                    <td><h6>Изменить публикацию</h6></td>
-                {% endif %}
-            </tr>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Тип публикации</th>
+                    <th scope="col">Категории публикации</th>
+                    <th scope="col">Заголовок публикации</th>
+                    <th scope="col">Дата публикации</th>
+                    <th scope="col">Превью публикации</th>
+                    <th scope="col">Публикация</th>
+                    {% if perms.news.change_post %}
+                        <th scope="col">Изменить публикацию</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
             {% for post in news %}
                 <tr>
                     <td>{{ post.get_postsOrNews_display }}</td>
                     <td>
                         {% for category in post.postCategories.all %}
                             {% if not forloop.last %}
-                                {{ category.categories }},
+                                <a href="{% url 'category_list' category.id %}">{{ category.categories }},</a>
                             {% else %}
-                                {{ category.categories }}
+                                <a href="{% url 'category_list' category.id %}">{{ category.categories }}</a>
                             {% endif %}
                         {% endfor %}
                     </td>
-                    <td width="50%">{{ post.header|censor }}</td>
+                    <td>{{ post.header|truncatewords:5|censor }}</td>
                     <td>{{ post.timeIn|date:'d.m.Y'}}</td>
-                    <td width="50%">{{ post.text|truncatewords:20|censor }}</td>
-                    <td><a href="{% url 'news_detail' post.id %}">узнать подробнее</a></td>
-                    {% if perms.news.update_post %}
-                        <td><a href="{% url 'news_update' post.id %}">Изменить</a> </td>
-                    {% endif %}
+                    <td>{{ post.text|truncatewords:10|censor }}</td>
+                    <td><a href="{% url 'news_detail' post.id %}">Узнать подробнее</a></td>
+                        {% if perms.news.change_post %}
+                            <td><a href="{% url 'news_update' post.id %}">Изменить</a> </td>
+                        {% endif %}
                 </tr>
             {% endfor %}
-
+            </tbody>
         </table>
     {% else %}
         <h2>Публикации не найдены</h2>

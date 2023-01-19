@@ -7,7 +7,8 @@ from django.db.models import Sum
 
 class Author(models.Model):
     rating = models.IntegerField(default=0)
-    users = models.OneToOneField(User, on_delete=models.CASCADE)
+    users = models.OneToOneField(User,
+                                 on_delete=models.CASCADE)
 
     def update_rating(self):
         postRait = sum(Post.objects.filter(postAuthor=self).values_list('rating', flat=True))
@@ -32,9 +33,15 @@ class Author(models.Model):
 class Category(models.Model):
     categories = models.CharField(max_length=255,
                                   unique=True)
+    subscribers = models.ManyToManyField(User,
+                                         related_name='sub_categories',
+                                         through='SubscribeCategories')
 
     def __str__(self):
         return f'{self.categories}'
+
+    def get_subscribers(self):
+        return ",\n".join([str(p) for p in self.subscribers.all()])
 
 
 class Post(models.Model):
@@ -54,8 +61,10 @@ class Post(models.Model):
     text = models.TextField()
     rating = models.IntegerField(default=0)
 
-    postAuthor = models.ForeignKey(Author, on_delete=models.CASCADE)
-    postCategories = models.ManyToManyField(Category, through='PostCategory')
+    postAuthor = models.ForeignKey(Author,
+                                   on_delete=models.CASCADE)
+    postCategories = models.ManyToManyField(Category,
+                                            through='PostCategory')
 
     def like(self):
         self.rating += 1
@@ -66,7 +75,7 @@ class Post(models.Model):
         self.save()
 
     def preview(self):
-        return self.text[0:124] + '...'
+        return self.text[0:128] + '...'
 
     def __str__(self):
         return f'{self.text}'
@@ -76,8 +85,17 @@ class Post(models.Model):
 
 
 class PostCategory(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,
+                             on_delete=models.CASCADE)
+    category = models.ForeignKey(Category,
+                                 on_delete=models.CASCADE)
+
+
+class SubscribeCategories(models.Model):
+    subscriber = models.ForeignKey(User,
+                                   on_delete=models.CASCADE)
+    subCategory = models.ForeignKey(Category,
+                                    on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
@@ -85,8 +103,10 @@ class Comment(models.Model):
     timeIn = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(default=0)
 
-    postComment = models.ForeignKey(Post, on_delete=models.CASCADE)
-    userComment = models.ForeignKey(User, on_delete=models.CASCADE)
+    postComment = models.ForeignKey(Post,
+                                    on_delete=models.CASCADE)
+    userComment = models.ForeignKey(User,
+                                    on_delete=models.CASCADE)
 
     def like(self):
         self.rating += 1
