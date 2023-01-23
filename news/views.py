@@ -92,7 +92,6 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.postAuthor = self.request.user.author
-        print(f'author: {form.instance.postAuthor}')
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

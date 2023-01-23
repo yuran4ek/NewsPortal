@@ -40,4 +40,3 @@ def notify_category_email(sender, instance, **kwargs):
             category.append(cat.categories)
 
         send_notify_category_email(set(subscribers), category, instance.preview(), instance.header, instance.pk)
-
