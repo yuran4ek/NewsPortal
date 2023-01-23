@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
+    'django_apscheduler',
     'news.apps.NewsConfig',
     'accounts',
     'django_filters',
@@ -92,25 +93,9 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_SESSION_REMEMBER = None
-
-# ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
-
-LOGIN_REDIRECT_URL = '/news'
-LOGOUT_REDIRECT_URL = '/accounts/login'
-
-ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignUpForm',}
-
 WSGI_APPLICATION = 'NewsPortal.wsgi.application'
 
-SITE_URL = 'http://127.0.0.1:8000'
-
-DAILY_POST_LIMIT = 3
+STATICFILES_DIRS = [BASE_DIR /'static']
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -164,14 +149,29 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_DIRS = [BASE_DIR /'static']
+SITE_URL = 'http://127.0.0.1:8000'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DAILY_POST_LIMIT = 3
+
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SESSION_REMEMBER = None
+# ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
+ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignUpForm',}
+
+LOGIN_REDIRECT_URL = '/news'
+LOGOUT_REDIRECT_URL = '/accounts/login'
 
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_EMAIL')
-
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'yuran4ek37'
 EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_FOR_YANDEX_EMAIL')
 EMAIL_USE_SSL = True
+
+APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'
+APSCHEDULER_RUN_NOW_TIMEOUT = 25

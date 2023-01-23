@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load custom_filter %}
+
+{% load custom_tags %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        Уважаемый пользователь!<br>
+    </h1>
+        <h3>
+            Уведомляем вас, что за прошедшую неделю на нашем сайте <a href="{{ link }}">"Новостной портал"</a> в
+                {% if choices %}
+                    категории "{{ category }}", на которую вы подписаны,
+                {% else %}
+                    категориях "{{ category }}", на которые вы подписаны,
+                {% endif %}
+            появились новые публикации:<br>
+        </h3>
+            {% block content %}
+                {% if posts_per_week %}
+                    <table class="table">
+                        <thead>
+                        <h4>
+                            <tr>
+                                <th scope="col">Тип публикации</th>
+                                <th scope="col">Категории публикации</th>
+                                <th scope="col">Заголовок публикации</th>
+                                <th scope="col">Дата публикации</th>
+                                <th scope="col">Превью<br>публикации</th>
+                            </tr>
+                        </h4>
+                        </thead>
+
+                        <tbody>
+                        <h5>
+                            {% for post in posts_per_week %}
+                                <tr>
+                                    <td>{{ post.get_postsOrNews_display }}</td>
+                                    <td>
+                                        {% for category in post.postCategories.all %}
+                                            {% if not forloop.last %}
+                                                {{ category.categories }},
+                                            {% else %}
+                                                {{ category.categories }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ post.header|truncatewords:5|censor }}</td>
+                                    <td>{{ post.timeIn|date:'d.m.Y'}}</td>
+                                    <td>{{ post.text|truncatewords:10|censor }}</td>
+                                </tr>
+                            {% endfor %}
+                            </h5>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <h2>Публикации отсутствуют</h2>
+                {% endif %}
+            {% endblock content %}
+    <h3>
+        <a href="{{ link }}">Нажмите, что бы узнать подробнее.</a>
+    </h3>
+</body>
+</html>
