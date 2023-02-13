@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_apscheduler',
+    # my app
     'news.apps.NewsConfig',
     'accounts',
     'django_filters',
+    # authorisation with allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -149,6 +151,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# custom settings
 SITE_URL = 'http://127.0.0.1:8000'
 
 DAILY_POST_LIMIT = 3
@@ -166,7 +169,7 @@ LOGIN_REDIRECT_URL = '/news'
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_EMAIL')
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'yuran4ek37'
@@ -175,3 +178,19 @@ EMAIL_USE_SSL = True
 
 APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Указываем, куда будем сохранять кэшируемые файлы!
+        # Не забываем создать папку cache_files внутри папки с manage.py!
+        'TIMEOUT': 60,
+
+    }
+}
