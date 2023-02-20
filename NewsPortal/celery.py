@@ -9,11 +9,11 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 
-app.conf.new_posts_per_week = {
+app.conf.beat_schedule = {
     'send_email_about_new_posts_per_week': {
-        'task': 'board.tasks.new_posts_per_week',
-        'schedule': crontab(minute='*/2'),
+        'task': 'news.tasks.new_posts_per_week',
+        'schedule': crontab(hour=8, minute=0, day_of_week='monday'),
     },
 }
 
-# crontab(hour=8, minute=0, day_of_week='monday')
+
